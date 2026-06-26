@@ -19,7 +19,7 @@ resource "aws_instance" "mongodb" {
 #DELETE COMMAND FOR ALL AT A ONCE
 # for i in 40-databases/ 30-bastion/ 20-sg-rules/ 10-sg/ 00-vpc/; do cd $i; terraform destroy -auto-approve; cd ..;done
 
-#ct=rete
+#create
 # for i in 00-vpc/ 10-sg/  20-sg-rules/ 40-database/ 30-bastion/ ; do cd $i; terraform apply --auto-approve; cd ..;done
 
 # WE ARE USING TERRAFORM INSTANCE BLOCK OUTSIDE THE INSTANCE.
