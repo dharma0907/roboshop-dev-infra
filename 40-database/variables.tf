@@ -13,3 +13,9 @@ variable "zoneid" {
 variable "domain_name" {
   default = "dcinema.online"
 }
+
+variable "mysql_root_password" {
+
+  type = string
+  
+}

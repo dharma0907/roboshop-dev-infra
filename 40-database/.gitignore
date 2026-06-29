@@ -8,3 +8,6 @@
 *.tfstate
 *.tfstate.*
 .terraform.lock.hcl
+# tf vars contains some secure or sensitive data so we are not commiting the code
+*.tfvars
+*.tfvars.json
