@@ -1,4 +1,6 @@
 # we are creating s IAM POLICY AND ROLE TO MYSQL AND ATTACH TO MYSQL EC2 INSTANCE
+# created policy for role and policy for mysql 
+# we are attaching thagt policy to ec2 instanc mysql
 
 # we are taking ec2 instance iam  role from terraform document
 resource "aws_iam_role" "test_role" {
