@@ -12,7 +12,7 @@ terraform {
 terraform {
   backend "s3" {
     bucket = "dharma-90"
-    key    = "roboshop-dabase-instances.tfstate"
+    key    = "roboshop-database-instances.tfstate"
     region = "us-east-1"
     encrypt = true
     use_lockfile = true # will enable locking
