@@ -128,7 +128,7 @@ resource "terraform_data" "rabbitmq" {
    provisioner "remote-exec" {
     inline = [
       "chmod +x /tmp/bootstrap.sh",
-      "sudo /tmp/bootstrap.sh redis ${var.environment}" #it will run .sh with arguments $1=rabbitmq and $2=dev
+      "sudo /tmp/bootstrap.sh rabbitmq ${var.environment}" #it will run .sh with arguments $1=rabbitmq and $2=dev
     ]
   }
 }
