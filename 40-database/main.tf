@@ -132,3 +132,20 @@ resource "terraform_data" "rabbitmq" {
     ]
   }
 }
+
+
+#MYSQL INSTANCE CREATION 
+resource "aws_instance" "mysql" {
+  ami           = data.aws_ami.joindevops.id
+  instance_type = "t3.micro"
+  vpc_security_group_ids = [local.mysql_sg_id] # this is secruity group for rabbitmq
+  subnet_id = local.database_subnet_ids #databse subnet id
+     
+
+  tags = merge(
+    {
+        Name = "${local.common_name}-mysql"
+    },
+    local.common_tags
+  )
+}

@@ -15,6 +15,10 @@ data "aws_ssm_parameter" "rabbitmq_sg_id" {
   name = "/${var.project}/${var.environment}/rabbitmq_sg_id"
 }
 
+data "aws_ssm_parameter" "mysql_sg_id" {
+  name = "/${var.project}/${var.environment}/mysql_sg_id"
+}
+
 ## ami id we are taking form aws account which is already exists
 data "aws_ami" "joindevops" {
   most_recent      = true
