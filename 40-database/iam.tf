@@ -4,7 +4,7 @@
 
 # we are taking ec2 instance iam  role from terraform document
 resource "aws_iam_role" "mysql" {
-  name = "local.common_name-mysql"
+  name = "${local.common_name}-mysql"
 
   # Terraform's "jsonencode" function converts a
   # Terraform expression result to valid JSON syntax.
@@ -33,7 +33,7 @@ resource "aws_iam_role" "mysql" {
 #ROLE create , now we need policy
 
 resource "aws_iam_policy" "mysql" {
-  name        = "local.common_name-mysql"
+  name = "${local.common_name}-mysql"
   path        = "/"
   description = "Policy to read MySQL SSM paramter to attach to mysql instance"
 
