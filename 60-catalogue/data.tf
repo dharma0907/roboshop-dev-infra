@@ -2,9 +2,9 @@ data "aws_ssm_parameter" "catalogue_sg_id" {
     name = "/${var.project}/${var.environment}/catalogue_sg_id"
 }
 # we are creating catalogue instance in private subnet
-data "aws_ssm_parameter" "private_subnet_id" {
+data "aws_ssm_parameter" "private_subnet_ids" {
 
-  name = "/${var.project}/${var.environment}/private_subnet_id"
+  name = "/${var.project}/${var.environment}/private_subnet_ids"
 }
 
 data "aws_ssm_parameter" "vpc_id" {
