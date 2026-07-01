@@ -27,7 +27,7 @@ resource "terraform_data" "catalogue" {
 
   provisioner "file" {
     source      = "bootstrap.sh"
-    destination = "/tmp/bootstrap.sh"
+    destination = "/tmp/bootstrap.sh catalogue ${var.environment} ${var.app_version}"
   }
 
   provisioner "remote-exec" {
@@ -38,23 +38,23 @@ resource "terraform_data" "catalogue" {
   }
 }
 
-# 3. now we need to stop instance, Control the state of the instance
-resource "aws_ec2_instance_state" "catalogue" {
-  instance_id = aws_instance.catalogue.id
-  state       = "stopped" # Change to "running" to start it back up
-  depends_on = [ terraform_data.catalogue ] # we are saying stop only after creating and configuring instance, so 1 and 2 should manadetory to run 3
-}
+# # 3. now we need to stop instance, Control the state of the instance
+# resource "aws_ec2_instance_state" "catalogue" {
+#   instance_id = aws_instance.catalogue.id
+#   state       = "stopped" # Change to "running" to start it back up
+#   depends_on = [ terraform_data.catalogue ] # we are saying stop only after creating and configuring instance, so 1 and 2 should manadetory to run 3
+# }
 
-# 4. Take or create ami template
-resource "aws_ami_from_instance" "example" {
-  name               = "${local.common_name}-catalogue-${var.app_version}-${aws_instance.catalogue.id}"
-  source_instance_id = aws_instance.catalogue.id
-  depends_on = [ aws_ec2_instance_state.catalogue ] # this depends upon 3
-  tags = merge(
-    {
-        Name = "${local.common_name}-catalogue-${var.app_version}-${aws_instance.catalogue.id}"
-    },
-    local.common_tags
-  )
+# # 4. Take or create ami template
+# resource "aws_ami_from_instance" "example" {
+#   name               = "${local.common_name}-catalogue-${var.app_version}-${aws_instance.catalogue.id}"
+#   source_instance_id = aws_instance.catalogue.id
+#   depends_on = [ aws_ec2_instance_state.catalogue ] # this depends upon 3
+#   tags = merge(
+#     {
+#         Name = "${local.common_name}-catalogue-${var.app_version}-${aws_instance.catalogue.id}"
+#     },
+#     local.common_tags
+#   )
 
-}
+# }
