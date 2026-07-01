@@ -3,7 +3,7 @@
 # we are attaching thagt policy to ec2 instanc mysql
 
 # we are taking ec2 instance iam  role from terraform document
-resource "aws_iam_role" "test_role" {
+resource "aws_iam_role" "mysql" {
   name = "local.common_name-mysql"
 
   # Terraform's "jsonencode" function converts a
