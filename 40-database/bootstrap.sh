@@ -12,4 +12,4 @@ cd /home/ec2-user
 git clone https://github.com/dharma0907/roboshop-ansible-v3.git
 cd roboshop-ansible-v3
 git pull
-ansible-playbook roboshop.yaml -e "component=$component" -e "environment=$environment" 
+ansible-playbook roboshop.yaml -e "component=$component" -e "env=$environment" 
