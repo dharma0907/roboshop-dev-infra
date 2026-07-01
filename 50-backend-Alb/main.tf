@@ -21,9 +21,9 @@ resource "aws_lb" "backend_alb" {
 }
 
 #for load baalancer we need to create listner
-resource "aws_lb" "front_end" {
-  # ...
-}
+# resource "aws_lb" "front_end" {
+#   # ...
+# }
 
 resource "aws_lb_listener" "http" {
   load_balancer_arn = aws_lb.backend_alb.arn
@@ -46,11 +46,12 @@ resource "aws_route53_record" "www" {
   zone_id = var.zoneid
   name    = "*.backend-alb-${var.environment}.dcinema.online" # *.backend-alb-dev.dcinema.com
   type    = "A"
-  ttl     = 300
+  #ttl     = 300
    
     # featching 
    alias {
-    name                   = aws_lb.backend_alb.dns_name
+    #aws details
+    name                   = aws_lb.backend_alb.dns_name #*.backend-alb-dev.dcinema.com
     zone_id                = aws_lb.backend_alb.zone_id
     evaluate_target_health = true
   }
