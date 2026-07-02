@@ -54,7 +54,7 @@ resource "aws_route53_record" "www" {
     # featching 
    alias {
     #aws details
-    name                   = aws_lb.frontend_alb #*.frontend-alb-dev.dcinema.com
+    name                   = aws_lb.frontend_alb.dns_name#*.frontend-alb-dev.dcinema.com
     zone_id                = aws_lb.frontend_alb.zone_id
     evaluate_target_health = true
   }
