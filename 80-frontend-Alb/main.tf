@@ -1,7 +1,7 @@
 #aws load balancer creation code
 resource "aws_lb" "frontend_alb" {
   name               = "${local.common_name}-frontend-alb"
-  internal           = fakse # because this is frontend for public access
+  internal           = false # because this is frontend for public access
   load_balancer_type = "application"
   security_groups    = [local.frontend_alb_sg_id]
   subnets            = local.public_subnet_ids
