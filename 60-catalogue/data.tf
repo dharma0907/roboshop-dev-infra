@@ -12,8 +12,10 @@ data "aws_ssm_parameter" "vpc_id" {
   name = "/${var.project}/${var.environment}/vpc_id"
 }
 
+data "aws_ssm_parameter" "backend_alb_listener_arn" {
 
-
+  name = "/${var.project}/${var.environment}/backend_alb_listener_arn"
+}
 
 ## ami id we are taking form aws account which is already exists
 data "aws_ami" "joindevops" {

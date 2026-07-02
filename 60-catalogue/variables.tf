@@ -14,7 +14,7 @@ variable "app_version" {
 #   default = "Z05810911FO3SQMSZRLW2"
 # }
 
-# variable "domain_name" {
-#   default = "dcinema.online"
-# }
+variable "domain_name" {
+  default = "dcinema.online"
+}
 

@@ -101,3 +101,94 @@ resource "aws_launch_template" "catalogue" {
    )
  
 }
+
+# after creating launch template, need to create target group
+resource "aws_lb_target_group" "catalogue" {
+  name     = "${local.common_name}-catalogue-tg"
+  port     = 8080
+  protocol = "HTTP"
+  vpc_id   = local.vpc_id
+  deregistration_delay = 30
+  
+  # if we are creating target group, we need to create health checks
+  health_check {
+    healthy_threshold = 2
+    interval = 30
+    path = "/health"
+    port = "8080"
+    protocol = "HTTP"
+    timeout = 5
+    unhealthy_threshold = 2
+  }
+}
+
+# AUTO SCALING GROUP
+resource "aws_autoscaling_group" "catalogue" {
+  name                      = "${local.common_name}-catalogue-asg"
+  max_size                  = 10
+  min_size                  = 2
+  health_check_grace_period = 120
+  health_check_type         = "ELB"
+  desired_capacity          = 2
+  force_delete              = false
+  launch_template {
+    id      = aws_launch_template.catalogue.id
+    version = "$Latest"
+  }
+  vpc_zone_identifier       = [local.private_subnet_id]
+  #we need target group id here, to target particulat instance
+  target_group_arns          = [aws_lb_target_group.catalogue.arn]
+
+    dynamic "tag" {
+    for_each = merge(
+      {
+        Name = "${local.common_name}-catalogue"
+      },
+      local.common_tags
+    )
+    content{
+      key                 = tag.key
+      value               = tag.value
+      propagate_at_launch = true
+    }
+  }
+
+
+  timeouts {
+    delete = "15m"
+  }
+ 
+}
+
+resource "aws_autoscaling_policy" "catalogue"{
+  name                   = "${local.common_name}-catalogue-scaling-policy"
+  autoscaling_group_name = aws_autoscaling_group.catalogue.name
+  policy_type            = "TargetTrackingScaling"
+  estimated_instance_warmup = 120
+  target_tracking_configuration {
+    predefined_metric_specification {
+      predefined_metric_type = "ASGAverageCPUUtilization"
+    }
+    target_value = 75.0 # Target 75% CPU utilization
+  }
+}
+
+# alb rule
+# Forward action, means i t will forward the traffic to particular serivce
+
+resource "aws_lb_listener_rule" "host_based_weighted_routing" {
+  listener_arn = local.backend_alb_listener_arn  # we need to get backend ALB listener arn here
+
+  priority     = 10
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.catalogue.arn
+  }
+
+  condition {
+    host_header {
+      values = ["catalogue.backend-alb-${var.environment}.${var.domain_name}"]
+    }
+  }
+}
