@@ -17,7 +17,7 @@ resource "aws_acm_certificate" "roboshop" {
 
 # need to validate
 #Referencing domain_validation_options With for_each Based Resources
-resource "aws_route53_record" "example" {
+resource "aws_route53_record" "roboshop" {
   for_each = {
     for dvo in aws_acm_certificate.roboshop.domain_validation_options : dvo.domain_name => {
       name   = dvo.resource_record_name
