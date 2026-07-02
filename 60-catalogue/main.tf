@@ -60,7 +60,7 @@ resource "aws_ami_from_instance" "catalogue" {
 }
 
 
-#launch template
+# 5 launch template
 resource "aws_launch_template" "catalogue" {
   name = "${local.common_name}-catalogue-launch-template"
   image_id = aws_ami_from_instance.catalogue.id # we are taking from current instance
@@ -102,7 +102,7 @@ resource "aws_launch_template" "catalogue" {
  
 }
 
-# after creating launch template, need to create target group
+# 6. after creating launch template, need to create target group
 resource "aws_lb_target_group" "catalogue" {
   name     = "${local.common_name}-catalogue-tg"
   port     = 8080
@@ -122,7 +122,7 @@ resource "aws_lb_target_group" "catalogue" {
   }
 }
 
-# AUTO SCALING GROUP
+# 7. AUTO SCALING GROUP
 resource "aws_autoscaling_group" "catalogue" {
   name                      = "${local.common_name}-catalogue-asg"
   max_size                  = 10
@@ -138,6 +138,14 @@ resource "aws_autoscaling_group" "catalogue" {
   vpc_zone_identifier       = [local.private_subnet_id]
   #we need target group id here, to target particulat instance
   target_group_arns          = [aws_lb_target_group.catalogue.arn]
+
+   instance_refresh {
+    strategy = "Rolling"
+    preferences {
+      min_healthy_percentage = 50
+    }
+    triggers = ["launch_template"]
+  }
 
     dynamic "tag" {
     for_each = merge(
@@ -160,6 +168,7 @@ resource "aws_autoscaling_group" "catalogue" {
  
 }
 
+# 8. Auto scale policy creation
 resource "aws_autoscaling_policy" "catalogue"{
   name                   = "${local.common_name}-catalogue-scaling-policy"
   autoscaling_group_name = aws_autoscaling_group.catalogue.name
@@ -173,9 +182,8 @@ resource "aws_autoscaling_policy" "catalogue"{
   }
 }
 
-# alb rule
+# 9. alb rule
 # Forward action, means i t will forward the traffic to particular serivce
-
 resource "aws_lb_listener_rule" "host_based_weighted_routing" {
   listener_arn = local.backend_alb_listener_arn  # we need to get backend ALB listener arn here
 
@@ -190,5 +198,18 @@ resource "aws_lb_listener_rule" "host_based_weighted_routing" {
     host_header {
       values = ["catalogue.backend-alb-${var.environment}.${var.domain_name}"]
     }
+  }
+}
+
+# 10. we need to delete the stopped instance, because we have created ami from ec2 only, stop instance and taken ami and then created new ec2 instances
+resource "terraform_data" "catalogue_delete" {
+  triggers_replace = [
+    aws_instance.catalogue.id
+  ]
+  depends_on = [aws_autoscaling_policy.catalogue]
+
+  # executes where terraform is running
+  provisioner "local-exec" {
+    command = "aws ec2 terminate-instances --instance-ids ${aws_instance.catalogue.id}"
   }
 }
