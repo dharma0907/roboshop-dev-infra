@@ -187,7 +187,7 @@ resource "aws_autoscaling_policy" "shipping"{
 resource "aws_lb_listener_rule" "host_based_weighted_routing" {
   listener_arn = local.backend_alb_listener_arn  # we need to get backend ALB listener arn here
 
-  priority     = 10
+  priority     = 50
 
   action {
     type             = "forward"
